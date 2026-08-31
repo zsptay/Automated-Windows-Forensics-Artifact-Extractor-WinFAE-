@@ -1,0 +1,50 @@
+1. Volatile Process Hashing (SHA-256)
+
+Attackers frequently perform process masquerading (e.g., naming a malicious binary svchost.exe and running it from a non-standard path like C:\Users\Public). WinFAE records the path of every active process and automatically computes its SHA-256 hash.
+
+DFIR Value: These hashes can be queried automatically against the VirusTotal API or an organization's threat-intel baseline database to isolate malicious binaries instantly.
+
+2. Live Socket Connection Mapping
+
+Established TCP/UDP sockets are matched directly to their corresponding Process IDs (PIDs) and Process Names.
+
+DFIR Value: This allows immediate isolation of malicious Command and Control (C2) beacons or active reverse shells bypasses by validating whether a generic process (like notepad.exe) is holding an active external connection.
+
+3. Registry & Task Scheduler Persistence Audit
+
+Malware often modifies standard autorun nodes or schedule engines to survive system restarts. WinFAE inspects:
+
+HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+
+Non-Microsoft Scheduled Tasks (filtering out native system noise)
+
+DFIR Value: Isolates persistence vectors commonly leveraged by APT threat actors to establish long-term footholds inside environments.
+
+🚀 How to Run the Tool
+
+Prerequisites
+
+Windows 10/11 or Windows Server 2016/2019/2022.
+
+Elevated Administrator PowerShell Console.
+
+Execution
+
+Download the tool to the target machine via a secure USB or network share:
+
+git clone https://github.com/yourusername/WinFAE.git
+cd WinFAE
+
+
+Set the Execution Policy bypass to execute the local script:
+
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+
+Run the extractor specifying an output directory:
+
+.\Get-ForensicArtifacts.ps1 -OutputDir "C:\Triage_Output"
+
+
